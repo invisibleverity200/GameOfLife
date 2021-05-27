@@ -2,19 +2,20 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Game implements Runnable {
-    private boolean[][] gameState;
+    private Cell[][] gameState;
     private long speed;
     private int y_Size;
     private int x_Size;
     private int size;
     private int seed;
     private Flag flag;
+    private Random random = new Random();
 
     public int getSize() {
         return size;
     }
 
-    public boolean[][] getGameState() {
+    public Cell[][] getGameState() {
         return gameState;
     }
 
@@ -30,7 +31,7 @@ public class Game implements Runnable {
         this.x_Size = 1920 / size;
         this.y_Size = 1080 / size;
         this.seed = seed;
-        gameState = new boolean[1080 / size][1920 / size];
+        gameState = new Cell[1080 / size][1920 / size];
         this.speed = speed;
         this.size = size;
         this.flag = flag;
@@ -38,10 +39,10 @@ public class Game implements Runnable {
     }
 
     private void init() {
-        Random random = new Random();
         for (int y = 0; y < y_Size; y++) {
             for (int x = 0; x < x_Size; x++) {
-                gameState[y][x] = (random.nextInt(seed) < 10);
+                gameState[y][x] = new Cell();
+                gameState[y][x].alive = (random.nextInt(seed) < 10);
             }
         }
     }
@@ -50,11 +51,16 @@ public class Game implements Runnable {
         for (int y = 0; y < y_Size; y++) {
             for (int x = 0; x < x_Size; x++) {
                 int neighbourCount = getNeighbourCount(new int[]{y, x});
-                if (neighbourCount > 3 || neighbourCount < 2) {
-                    gameState[y][x] = false;
+                if (gameState[y][x].mutation > 9900) {
+                    killNeighbours(new int[]{y, x});
+                } else if (neighbourCount > 3 || neighbourCount < 2 || gameState[y][x].age > 10000) {
+                    gameState[y][x].alive = false;
+                    gameState[y][x].age = 0;
                 } else if (!isAlive(new int[]{y, x}) && neighbourCount == 3) {
-                    gameState[y][x] = true;
+                    gameState[y][x].alive = true;
+                    gameState[y][x].mutation = random.nextInt(1000);
                 }
+                if (isAlive(new int[]{y, x})) gameState[y][x].age++;
             }
         }
 
@@ -64,7 +70,7 @@ public class Game implements Runnable {
         this.x_Size = 1920 / size;
         this.y_Size = 1080 / size;
         this.seed = seed;
-        gameState = new boolean[1080 / size][1920 / size];
+        gameState = new Cell[1080 / size][1920 / size];
         this.speed = speed;
         this.size = size;
         init();
@@ -76,15 +82,25 @@ public class Game implements Runnable {
         for (int y = -1; y < 2; y++) {
             for (int x = -1; x < 2; x++) {
                 if (!(y == 0 & x == 0) && ((y + pos[0]) < y_Size && (x + pos[1]) < x_Size) && !((y + pos[0]) < 0 || (x + pos[1]) < 0)) {
-                    if (gameState[pos[0] + y][pos[1] + x]) count++;
+                    if (gameState[pos[0] + y][pos[1] + x].alive) count++;
                 }
             }
         }
         return count;
     }
 
+    private void killNeighbours(int[] pos) {
+        for (int y = -1; y < 2; y++) {
+            for (int x = -1; x < 2; x++) {
+                if (!(y == 0 & x == 0) && ((y + pos[0]) < y_Size && (x + pos[1]) < x_Size) && !((y + pos[0]) < 0 || (x + pos[1]) < 0)) {
+                    gameState[pos[0] + y][pos[1] + x].alive = false;
+                }
+            }
+        }
+    }
+
     private boolean isAlive(int[] pos) {
-        return gameState[pos[0]][pos[1]];
+        return gameState[pos[0]][pos[1]].alive;
     }
 
     @Override

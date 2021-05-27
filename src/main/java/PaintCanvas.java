@@ -37,13 +37,13 @@ public class PaintCanvas extends Canvas implements Runnable {
 
         for (int y = 0; y < game.getY_Size(); y++) {
             for (int x = 0; x < game.getX_Size(); x++) {
-                if (game.getGameState()[y][x]) g.setColor(Color.green);
+                if (game.getGameState()[y][x].mutation > 9900) g.setColor(Color.red);
+                else if (game.getGameState()[y][x].alive) g.setColor(Color.green);
                 else g.setColor(Color.white);
                 g.fillRect(x * game.getSize(), y * game.getSize(), game.getSize(), game.getSize());
 
             }
         }
-
         g.dispose();
 
         this.getBufferStrategy().show();

@@ -12,7 +12,6 @@ public class GUI extends JFrame {
     PaintCanvas canvas;
     JPanel canvasPanel;
     public volatile Game game;
-    boolean flag = true;
 
 
     GUI() {
