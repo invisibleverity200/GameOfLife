@@ -60,6 +60,17 @@ public class Game implements Runnable {
 
     }
 
+    void update(int size, long speed, int seed) {
+        this.x_Size = 1920 / size;
+        this.y_Size = 1080 / size;
+        this.seed = seed;
+        gameState = new boolean[1080 / size][1920 / size];
+        this.speed = speed;
+        this.size = size;
+        init();
+        flag.flag = true;
+    }
+
     private int getNeighbourCount(int[] pos) {
         int count = 0;
         for (int y = -1; y < 2; y++) {

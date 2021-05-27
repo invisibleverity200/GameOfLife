@@ -11,7 +11,7 @@ public class GUI extends JFrame {
     JButton start;
     PaintCanvas canvas;
     JPanel canvasPanel;
-    Game game;
+    public volatile Game game;
     boolean flag = true;
 
 
@@ -89,15 +89,16 @@ public class GUI extends JFrame {
         this.add(setting);
         this.add(canvasPanel);
         Flag flag = new Flag();
+        game = new Game(1, 1, 1, flag);
+        canvas = new PaintCanvas(canvasPanel, game, flag);
 
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (start.getText().equals("Start")) {
-                    game = new Game(Integer.valueOf(size.getText()), Integer.valueOf(speedJText.getText()), Integer.valueOf(seedJText.getText()), flag);
-                    canvas = new PaintCanvas(canvasPanel, game, flag);
-                    new Thread(canvas).start();
+                    game.update(Integer.valueOf(size.getText()), Integer.valueOf(speedJText.getText()), Integer.valueOf(seedJText.getText()));
                     new Thread(game).start();
+                    new Thread(canvas).start();
                     start.setText("Stop");
                 } else {
                     flag.flag = false;
