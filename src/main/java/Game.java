@@ -52,7 +52,7 @@ public class Game implements Runnable {
                 int neighbourCount = getNeighbourCount(new int[]{y, x});
                 if (neighbourCount > 3 || neighbourCount < 2) {
                     gameState[y][x] = false;
-                } else if (!isAlive(new int[]{y, x})) {
+                } else if (!isAlive(new int[]{y, x}) && neighbourCount == 3) {
                     gameState[y][x] = true;
                 }
             }

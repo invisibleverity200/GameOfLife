@@ -111,6 +111,6 @@ public class GUI extends JFrame {
 
 
         this.setSize(1920, 5);
-        this.setSize(1920, 1080); //FIXME without this buttons do not appear
+        this.setSize(1920, 1080);
     }
 }
