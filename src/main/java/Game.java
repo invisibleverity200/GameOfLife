@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Game implements Runnable {
@@ -8,8 +7,11 @@ public class Game implements Runnable {
     private int x_Size;
     private int size;
     private int seed;
-    private Flag flag;
-    private Random random = new Random();
+    private final Flag flag;
+    private final Random random = new Random();
+    private int bigger = 2;
+    private int notBigger = 3;
+    private int equal = 2;
 
     public int getSize() {
         return size;
@@ -53,10 +55,10 @@ public class Game implements Runnable {
                 int neighbourCount = getNeighbourCount(new int[]{y, x});
                 if (gameState[y][x].mutation > 9900) {
                     killNeighbours(new int[]{y, x});
-                } else if (neighbourCount > 3 || neighbourCount < 2 || gameState[y][x].age > 10000) {
+                } else if (neighbourCount > notBigger || neighbourCount < bigger || gameState[y][x].age > 10000) {
                     gameState[y][x].alive = false;
                     gameState[y][x].age = 0;
-                } else if (!isAlive(new int[]{y, x}) && neighbourCount == 3) {
+                } else if (!isAlive(new int[]{y, x}) && neighbourCount == equal) {
                     gameState[y][x].alive = true;
                     gameState[y][x].mutation = random.nextInt(1000);
                 }
@@ -66,7 +68,10 @@ public class Game implements Runnable {
 
     }
 
-    void update(int size, long speed, int seed) {
+    void update(int size, long speed, int seed, int bigger, int notBigger, int equal) {
+        this.bigger = bigger;
+        this.notBigger = notBigger;
+        this.equal = equal;
         this.x_Size = 1920 / size;
         this.y_Size = 1080 / size;
         this.seed = seed;
@@ -110,7 +115,7 @@ public class Game implements Runnable {
                 Thread.sleep(speed);
                 step();
             } catch (InterruptedException e) {
-
+                e.printStackTrace();
             }
         }
         System.out.println("Game Thread Closed!");
