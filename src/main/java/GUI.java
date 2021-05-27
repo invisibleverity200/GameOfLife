@@ -24,7 +24,7 @@ public class GUI extends JFrame {
         GridLayout gridLayout = new GridLayout(1, 12);
         setting.setLayout(gridLayout);
 
-        setting.setSize(1920, 100);
+        setting.setSize(1920, 20);
 
         JTextField size = new JTextField("Size");
         size.setHorizontalAlignment(JTextField.CENTER);
